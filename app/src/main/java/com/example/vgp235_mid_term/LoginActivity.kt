@@ -1,7 +1,7 @@
 package com.example.vgp235_mid_term
 
-import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -9,31 +9,43 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.vgp235_mid_term.ui.theme.VGP235MidtermTheme
 
-class MainActivity : ComponentActivity() {
+class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             VGP235MidtermTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    HomeScreen(modifier = Modifier.padding(innerPadding))
+                    LoginScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        onBackClick = { finish() }
+                    )
                 }
             }
         }
@@ -41,8 +53,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(modifier: Modifier = Modifier, onBackClick: () -> Unit = {}) {
     val context = LocalContext.current
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -56,29 +70,47 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Welcome to My App",
+                text = "Login",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            OutlinedTextField(
+                value = username,
+                onValueChange = { username = it },
+                label = { Text("Username or Email") },
+                modifier = Modifier.fillMaxWidth(0.8f)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Password") },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                modifier = Modifier.fillMaxWidth(0.8f)
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
             Button(
                 onClick = {
-                    context.startActivity(Intent(context, LoginActivity::class.java))
+                    Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
                 }
             ) {
-                Text(text = "Go to Login")
+                Text(text = "Login")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = {
-                    context.startActivity(Intent(context, RegisterActivity::class.java))
-                }
+                onClick = onBackClick
             ) {
-                Text(text = "Go to Register")
+                Text(text = "Back to Home")
             }
         }
     }
@@ -86,8 +118,8 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun HomeScreenPreview() {
+fun LoginScreenPreview() {
     VGP235MidtermTheme {
-        HomeScreen()
+        LoginScreen()
     }
 }
